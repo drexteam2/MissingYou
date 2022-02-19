@@ -1,0 +1,123 @@
+# Sources used:
+# Step-by-step article tutorial: https://jaidengerig.medium.com/create-a-cd-pipeline-to-auto-publish-unity-games-from-github-to-itch-io-in-30-minutes-for-free-bae3b254283c
+# List of GameCI Unity Docker images: https://hub.docker.com/r/unityci/editor/tags
+
+name: Build Project and Publish to Itch.io
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build for ${{ matrix.targetPlatform }} and Publish to Itch.io
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneLinux64
+          - StandaloneOSX
+          - StandaloneWindows64
+          - WebGL
+        unityVersion:
+          - 2020.3.27f1
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+      
+      # Cache
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: Library-
+      
+      # Build
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #    UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+      #    UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #    UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+          unityVersion: ${{ matrix.unityVersion }}
+
+      # Return license
+      # - name: Return license
+      #  uses: game-ci/unity-return-license@v1
+      #  if: always()
+
+      # Output
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
+
+      # Check existence of build files
+      - name: Check Linux build exists
+        id: check_linux
+        uses: andstor/file-existence-action@v1
+        with:
+          files: build/StandaloneLinux64
+
+      - name: Check macOS build exists
+        id: check_osx
+        uses: andstor/file-existence-action@v1
+        with:
+          files: build/StandaloneOSX
+
+      - name: Check Windows build exists
+        id: check_win
+        uses: andstor/file-existence-action@v1
+        with:
+          files: build/StandaloneWindows64
+
+      - name: Check WebGL build exists
+        id: check_webgl
+        uses: andstor/file-existence-action@v1
+        with:
+          files: build/WebGL
+
+      # Upload to Itch.io
+      - name: Upload Linux build to Itch.io
+        if: steps.check_linux.outputs.files_exists == 'true'
+        uses: josephbmanley/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: linux
+          ITCH_GAME: gamejam
+          ITCH_USER: jngo102
+          PACKAGE: build/StandaloneLinux64
+
+      - name: Upload macOS build to Itch.io
+        if: steps.check_osx.outputs.files_exists == 'true'
+        uses: josephbmanley/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: osx
+          ITCH_GAME: gamejam
+          ITCH_USER: jngo102
+          PACKAGE: build/StandaloneOSX
+
+      - name: Upload Windows build to Itch.io
+        if: steps.check_win.outputs.files_exists == 'true'
+        uses: josephbmanley/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: windows
+          ITCH_GAME: gamejam
+          ITCH_USER: jngo102
+          PACKAGE: build/StandaloneWindows64
+
+      - name: Upload WebGL build to Itch.io
+        if: steps.check_webgl.outputs.files_exists == 'true'
+        uses: josephbmanley/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: html5
+          ITCH_GAME: gamejam
+          ITCH_USER: jngo102
+          PACKAGE: build/WebGL
