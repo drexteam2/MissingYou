@@ -1,33 +1,42 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(TextMeshPro))]
-public class Typewriter : UIBehaviour
+[RequireComponent(typeof(TextMeshProUGUI))]
+public class Typewriter : UIItem
 {
+    public UnityEvent finishedTyping;
+
     public string text;
     public float typingSpeed;
 
-    private TextMeshPro _tmp;
+    private string _targetText;
+
+    private TextMeshProUGUI _tmp;
 
     protected override void Awake()
     {
-        _tmp ??= GetComponent<TextMeshPro>();
+        _tmp ??= GetComponent<TextMeshProUGUI>();
     }
 
     public IEnumerator StartTyping(string targetText)
     {
-        for (int letter = 1; letter < targetText.Length; letter++)
+        _targetText = targetText;
+        for (int letter = 1; letter < _targetText.Length; letter++)
         {
-            string temp = targetText.Substring(0, letter);
-            _tmp.text = temp;
+            string textPart = _targetText.Substring(0, letter);
+            _tmp.text = textPart;
             yield return new WaitForSeconds(1.0f / typingSpeed);
         }
+
+        finishedTyping.Invoke();
     }
 
     public void SkipTyping()
     {
-        _tmp.text = text;
+        _tmp.text = _targetText;
+        finishedTyping.Invoke();
     }
 }
