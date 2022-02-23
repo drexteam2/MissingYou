@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a13c5539cb6eb341a38dbdd3700a39c, type: 3}
   m_Name: TestNote
   m_EditorClassIdentifier: 
+  interactionType: 0
   interactText: This is a test note.

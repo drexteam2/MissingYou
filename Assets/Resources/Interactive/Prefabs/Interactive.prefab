@@ -143,4 +143,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1aa6b395f926f4492dc7a4cc288b8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactiveObject: {fileID: 0}
+  interactiveObject: {fileID: 11400000, guid: dd6532ccafb4e2e428b07b38a8fd8fc3, type: 2}
