@@ -22,6 +22,14 @@ public class SlashEffect : MonoBehaviour
         transform.localScale = PlayerController.Instance.transform.localScale * Mathf.Abs(transform.localScale.x);
     }
 
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            PlayerController.Instance.Bounce();
+        }
+    }
+
     public void DestroySelf()
     {
         Destroy(gameObject);

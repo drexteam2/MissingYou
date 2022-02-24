@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     }
     
     public float attackCooldown;
+    public float bounceForce;
     public float jumpSpeed;
     public float jumpBufferTime;
     public float jumpTimeMax;
@@ -73,6 +74,11 @@ public class PlayerController : MonoBehaviour
         _terrainMask = 1 << LayerMask.NameToLayer("Terrain");
 
         UIManager.Instance.GetComponentInChildren<Typewriter>(true).finishedTyping.AddListener(() => _reading = false);
+    }
+
+    private void Start()
+    {
+        healthChanged.Invoke(maxHealth, currentHealth);
     }
 
     private void Update()
@@ -224,7 +230,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine _typeRoutine;
     private void Interact(InputAction.CallbackContext ctx)
     {
-        if (ctx.ReadValueAsButton() && interactingWith != null)
+        if (ctx.ReadValueAsButton() && IsGrounded() && interactingWith != null)
         {
             switch (interactingWith.interactionType)
             {
@@ -250,6 +256,11 @@ public class PlayerController : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void Bounce()
+    {
+        _body.velocity = new Vector2(_body.velocity.x, bounceForce);
     }
 
     public void Flip()

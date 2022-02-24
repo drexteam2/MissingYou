@@ -165,6 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCooldown: 0.33
+  bounceForce: 8
   jumpSpeed: 10
   jumpBufferTime: 0.2
   jumpTimeMax: 0.5

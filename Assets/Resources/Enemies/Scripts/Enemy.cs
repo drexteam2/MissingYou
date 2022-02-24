@@ -9,11 +9,9 @@ public class Enemy: MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        Debug.Log("Triggered by: " + collider.name);
         if (collider.gameObject.layer == LayerMask.NameToLayer("Enemy Damager"))
         {
             var slashEffect = collider.GetComponent<SlashEffect>();
-            Debug.Log("Slash effect null? " + (slashEffect == null));
             if (slashEffect != null)
             {
                 health -= slashEffect.damage;

@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
@@ -21,10 +18,5 @@ public class HealthBar : MonoBehaviour
     {
         _fillMat.SetFloat("_Progress", (float)currentHealth / maxHealth);
         _rect.sizeDelta = new Vector2(maxHealth * 5, _rect.sizeDelta.y);
-    }
-
-    void Update()
-    {
-        
     }
 }
