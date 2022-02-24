@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Animator))]
@@ -25,13 +26,21 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    public float walkSpeed;
-    public float runSpeed;
+    public float attackCooldown;
     public float jumpSpeed;
     public float jumpBufferTime;
     public float jumpTimeMax;
+    public float runSpeed;
+    public float walkSpeed;
+
+    public int currentHealth;
+    public int maxHealth;
+
+    public GameObject slashEffectPrefab;
 
     public Interactive interactingWith;
+
+    public UnityEvent<int, int> healthChanged;
 
     private Animator _anim;
     private Collider2D _col;
@@ -40,9 +49,10 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInputActions _input;
 
+    private Vector2 _inputVector;
     private float _jumpBufferTimer;
     private float _jumpTime;
-    private float _moveX;
+    private float _timeBetweenAttacks;
 
     private bool _bufferingJump;
     private bool _jumping;
@@ -67,11 +77,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        _moveX = _input.Player.Movement.ReadValue<float>();
-        if (!_interacting && Mathf.Abs(_moveX) > 0)
+        _timeBetweenAttacks += Time.deltaTime;
+        _inputVector = new Vector2(_input.Player.Movement.ReadValue<float>(), _input.Player.Vertical.ReadValue<float>());
+        if (!_interacting && Mathf.Abs(_inputVector.x) > 0)
         {
-            if (_moveX < 0 && transform.localScale.x > 0 ||
-                _moveX > 0 && transform.localScale.x < 0)
+            if (_inputVector.x < 0 && transform.localScale.x > 0 ||
+                _inputVector.x > 0 && transform.localScale.x < 0)
             {
                 Flip();
             }
@@ -85,60 +96,63 @@ public class PlayerController : MonoBehaviour
             _body.velocity = new Vector2(0, _body.velocity.y);
         }
 
-        if (_bufferingJump)
+        if (!_interacting)
         {
-            if (IsGrounded())
+            if (_bufferingJump)
             {
-                _bufferingJump = false;
-                _jumpBufferTimer = 0;
-                _jumping = true;
+                if (IsGrounded())
+                {
+                    _bufferingJump = false;
+                    _jumpBufferTimer = 0;
+                    _jumping = true;
+                }
+
+                _jumpBufferTimer += Time.deltaTime;
+                if (_jumpBufferTimer >= jumpBufferTime)
+                {
+                    _bufferingJump = false;
+                    _jumpBufferTimer = 0;
+                }
             }
 
-            _jumpBufferTimer += Time.deltaTime;
-            if (_jumpBufferTimer >= jumpBufferTime)
+            if (_input.Player.Jump.WasPressedThisFrame())
             {
-                _bufferingJump = false;
-                _jumpBufferTimer = 0;
+                if (IsGrounded())
+                {
+                    _jumping = true;
+                }
+                else
+                {
+                    _bufferingJump = true;
+                }
             }
-        }
 
-        if (_input.Player.Jump.WasPressedThisFrame())
-        {
-            if (IsGrounded())
-            {
-                _jumping = true;
-            }
-            else
-            {
-                _bufferingJump = true;
-            }
-        }
-        
-        if (!_input.Player.Jump.IsPressed() && _jumping)
-        {
-            _jumping = false;
-            _jumpTime = 0;
-            if (_body.velocity.y > 0)
-            {
-                _body.velocity = new Vector2(_body.velocity.x, jumpSpeed / 2);
-            }
-        }
-
-        if (_jumping)
-        {
-            //_anim.Play("Jump");
-            _jumpTime += Time.deltaTime;
-            if (_jumpTime <= jumpTimeMax)
-            {
-                _body.velocity = new Vector2(_body.velocity.x, jumpSpeed);
-            }
-            else
+            if (!_input.Player.Jump.IsPressed() && _jumping)
             {
                 _jumping = false;
                 _jumpTime = 0;
                 if (_body.velocity.y > 0)
                 {
                     _body.velocity = new Vector2(_body.velocity.x, jumpSpeed / 2);
+                }
+            }
+
+            if (_jumping)
+            {
+                //_anim.Play("Jump");
+                _jumpTime += Time.deltaTime;
+                if (_jumpTime <= jumpTimeMax)
+                {
+                    _body.velocity = new Vector2(_body.velocity.x, jumpSpeed);
+                }
+                else
+                {
+                    _jumping = false;
+                    _jumpTime = 0;
+                    if (_body.velocity.y > 0)
+                    {
+                        _body.velocity = new Vector2(_body.velocity.x, jumpSpeed / 2);
+                    }
                 }
             }
         }
@@ -154,10 +168,24 @@ public class PlayerController : MonoBehaviour
         StopControl();
     }
 
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Player Damager"))
+        {
+            var enemy = collider.GetComponentInParent<Enemy>();
+            if (enemy != null)
+            {
+                currentHealth -= enemy.damager.damageAmount;
+                healthChanged.Invoke(maxHealth, currentHealth);
+            }
+        }
+    }
+
     public void StopControl()
     {
         _input.Disable();
 
+        _input.Player.Attack.performed -= Attack;
         _input.Player.Interact.performed -= Interact;
     }
 
@@ -165,7 +193,32 @@ public class PlayerController : MonoBehaviour
     {
         _input.Enable();
 
+        _input.Player.Attack.performed += Attack;
         _input.Player.Interact.performed += Interact;
+    }
+
+    private void Attack(InputAction.CallbackContext ctx)
+    {
+        if (ctx.ReadValueAsButton() && _timeBetweenAttacks >= attackCooldown)
+        {
+            _timeBetweenAttacks = 0;
+            GameObject slashEffect = Instantiate(slashEffectPrefab, transform.position, Quaternion.identity);
+            if (_inputVector.y > Mathf.Epsilon)
+            {
+                //_anim.Play("Attack Up");
+                slashEffect.transform.Rotate(0, 0, -90 * transform.localScale.x);
+            }
+            else if (_inputVector.y < -Mathf.Epsilon && !IsGrounded())
+            {
+                //_anim.Play("Attack Down");
+                slashEffect.transform.Rotate(0, 0, 90 * transform.localScale.x);
+            }
+            else
+            {
+                //_anim.Play("Attack");
+                slashEffect.transform.Rotate(0, 0, 180);
+            }
+        }
     }
 
     private Coroutine _typeRoutine;
@@ -196,27 +249,6 @@ public class PlayerController : MonoBehaviour
                     }
                     break;
             }
-        }
-    }
-
-    private void Move(InputAction.CallbackContext ctx)
-    {
-        _moveX = ctx.ReadValue<float>();
-        if (_moveX < 0 && transform.localScale.x > 0 ||
-            _moveX > 0 && transform.localScale.x < 0)
-        {
-            Flip();
-        }
-
-        if (Mathf.Abs(_moveX) > 0)
-        {
-            _anim.Play("Walk");
-            _body.velocity = Vector2.right * transform.localScale.x * walkSpeed;
-        }
-        else
-        {
-            _anim.Play("Idle");
-            _body.velocity = Vector2.zero;
         }
     }
 
