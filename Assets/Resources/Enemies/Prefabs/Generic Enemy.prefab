@@ -212,8 +212,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patrol: 0
-  patrolSpeed: 50
+  patrolSpeed: 100
   patrolTimer: 3
+  startRight: 1
   rigidBody: {fileID: 3428726304313205715}
   groundCheckPos: {fileID: 8906315140894638341}
   groundLayer:

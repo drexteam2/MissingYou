@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   welcomeScreenVersion: '1.9.4 '
   playmakerVersion: 
-  showWelcomeScreen: 0
+  showWelcomeScreen: 1
   showUpgradeGuide: 0
-  lastAutoUpdateSignature: 2020.3.27f1__D:/GameJam/MissingYou/Assets__0.0.0.0
+  lastAutoUpdateSignature: 2020.3.27f1__C:/Users/gabeq/Documents/GitHub/GameJam/Assets__0.0.0.0
   useLegacyNetworking: 0
