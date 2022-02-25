@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -2462333396320699995}
   - component: {fileID: 2202699829637511813}
   - component: {fileID: 2640380329074981303}
+  - component: {fileID: 307324674404469861}
   m_Layer: 8
   m_Name: Generic Enemy
   m_TagString: Untagged
@@ -34,6 +35,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2903562032120521376}
+  - {fileID: 8906315140894638341}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -115,7 +117,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2630834980919236197}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -197,6 +199,56 @@ MonoBehaviour:
   healthChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &307324674404469861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2630834980919236197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2878deba87cdba418491fe1718e6ba6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  patrol: 0
+  patrolSpeed: 50
+  patrolTimer: 3
+  rigidBody: {fileID: 3428726304313205715}
+  groundCheckPos: {fileID: 8906315140894638341}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!1 &4857572703732621032
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8906315140894638341}
+  m_Layer: 0
+  m_Name: Ground Checker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8906315140894638341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4857572703732621032}
+  m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.6026964, y: -1.27, z: -3.986251}
+  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5225481590665380166}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8480585261854669823
 GameObject:
   m_ObjectHideFlags: 0
