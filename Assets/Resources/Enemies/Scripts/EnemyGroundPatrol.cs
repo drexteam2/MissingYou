@@ -10,9 +10,11 @@ public class EnemyGroundPatrol : MonoBehaviour
     public bool patrol;
     public float patrolSpeed;
     public float patrolTimer;
+    public bool startRight;
 
     private bool mustFlip;
     private float countdown;
+    private int directionMod;
 
     public Rigidbody2D rigidBody;
     public Transform groundCheckPos;
@@ -23,7 +25,14 @@ public class EnemyGroundPatrol : MonoBehaviour
     void Start()
     {
         patrol = true ;
-
+        
+        if (startRight == true){
+            directionMod = 1;
+        }
+        else {
+            directionMod = -1;
+        }
+        
         countdown = patrolTimer;
     }
 
@@ -69,8 +78,8 @@ public class EnemyGroundPatrol : MonoBehaviour
             Flip();
         }
 
-        //sets velocity. Starts negative so enemy goes left on startup
-        rigidBody.velocity = new Vector2(-patrolSpeed * Time.fixedDeltaTime, rigidBody.velocity.y);
+        //sets velocity.
+        rigidBody.velocity = new Vector2((directionMod)*patrolSpeed * Time.fixedDeltaTime, rigidBody.velocity.y);
     }
 
     //Flips the sprite and sets the walk speed in the opposite direction
