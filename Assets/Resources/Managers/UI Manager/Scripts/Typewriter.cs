@@ -2,7 +2,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class Typewriter : UIItem

@@ -5,61 +5,101 @@ using UnityEngine.EventSystems;
 public class UIManager : UIBehaviour
 {
     private static UIManager _instance;
-    public static UIManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                var uiManagerObj = Instantiate(Resources.Load<GameObject>("Managers/UI Manager/Prefabs/UI Manager"));
-                DontDestroyOnLoad(uiManagerObj);
-                uiManagerObj.name = uiManagerObj.name.Replace("(Clone)", "");
-                uiManagerObj.SetActive(true);
-                _instance = uiManagerObj.GetComponent<UIManager>();
-            }
+    public static UIManager Instance => _instance;
 
-            return _instance;
-        }
-    }
+    private Dictionary<string, UIItem> _activeUIs = new Dictionary<string, UIItem>();
 
-    private Dictionary<string, UIItem> _uis = new Dictionary<string, UIItem>();
+    private Dictionary<string, GameObject> _uis = new Dictionary<string, GameObject>();
 
     protected override void Awake()
     {
         _instance ??= this;
         DontDestroyOnLoad(_instance.gameObject);
 
-        foreach (Transform childUI in transform)
+        _uis["Fader"] = Resources.Load<GameObject>("Managers/UI Manager/Prefabs/Fader");
+        _uis["Health Bar"] = Resources.Load<GameObject>("Managers/UI Manager/Prefabs/Health Bar");
+        _uis["Note Background"] = Resources.Load<GameObject>("Managers/UI Manager/Prefabs/Note Background");
+    }
+
+    public UIItem InstanceUI(string uiName)
+    {
+        if (!_uis.ContainsKey(uiName))
         {
-            _uis.Add(childUI.name, childUI.GetComponent<UIItem>());
+            Debug.LogError($"Could not instance UI {uiName} that is not in UI Dictionary.");
+            return null;
         }
+
+        if (_activeUIs.ContainsKey(uiName))
+        {
+            Debug.Log($"UI {uiName} already exists, fetching that.");
+            return _activeUIs[uiName];
+        }
+
+        Debug.Log($"Instantiating new UI {uiName}.");
+        GameObject ui = Instantiate(_uis[uiName], transform);
+        _activeUIs.Add(uiName, ui.GetComponent<UIItem>());
+
+        return ui.GetComponent<UIItem>();
+    }
+
+    public UIItem GetUI(string uiName)
+    {
+        if (_activeUIs.ContainsKey(uiName))
+        {
+            Debug.Log($"Fetching existing UI {uiName}.");
+            return _activeUIs[uiName];
+        }
+        
+        if (_uis.ContainsKey(uiName))
+        {
+            Debug.Log($"Could not get UI {uiName} that doesn't exist yet, but it is in UI Dictionary, instantiating a new one.");
+            return InstanceUI(uiName);
+        }
+
+        Debug.Log($"Could not get UI {uiName} that is not in UI Dictionary.");
+        return null;
     }
 
     public UIItem ShowUI(string uiName)
     {
-        if (!_uis.ContainsKey(uiName))
+        UIItem ui = GetUI(uiName);
+        if (ui == null)
         {
-            Debug.LogError("Could not show; UI does not exist.");
+            Debug.LogError($"Could not show {uiName}; UI does not exist.");
             return null;
         }
 
-        UIItem ui = _uis[uiName];
-        ui.Show();
+        Debug.Log($"Showing UI {uiName}.");
+        StartCoroutine(ui.Show());
 
         return ui;
     }
 
     public UIItem HideUI(string uiName)
     {
-        if (!_uis.ContainsKey(uiName))
+        UIItem ui = GetUI(uiName);
+        if (ui == null)
         {
-            Debug.LogError("Could not hide; UI does not exist.");
+            Debug.LogError($"Could not hide {uiName}; UI does not exist.");
             return null;
         }
 
-        UIItem ui = _uis[uiName];
-        ui.Hide();
+        Debug.Log($"Hiding UI {uiName}.");
+        StartCoroutine(ui.Hide());
 
         return ui;
+    }
+
+    public void FreeUI(string uiName)
+    {
+        if (!_activeUIs.ContainsKey(uiName))
+        {
+            Debug.LogError($"Could not free {uiName}; It does not exist.");
+            return;
+        }
+
+        Debug.Log($"Freeing UI {uiName}.");
+        _uis.Remove(uiName);
+        Destroy(_activeUIs[uiName]);
     }
 }

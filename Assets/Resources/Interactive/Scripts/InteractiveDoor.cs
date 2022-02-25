@@ -4,6 +4,7 @@ using UnityEngine;
 public class InteractiveDoor : Interactive
 {
     public GameObject doorPrefab;
+    public string toScene;
 
     private void Awake()
     {

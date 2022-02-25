@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -9,22 +10,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private static PlayerController _instance;
-    public static PlayerController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                var playerObj = Instantiate(Resources.Load<GameObject>("Player/Prefabs/Player"));
-                DontDestroyOnLoad(playerObj);
-                playerObj.name = playerObj.name.Replace("(Clone)", "");
-                playerObj.SetActive(true);
-                _instance = playerObj.GetComponent<PlayerController>();
-            }
-
-            return _instance;
-        }
-    }
+    public static PlayerController Instance => _instance;
     
     public float attackCooldown;
     public float bounceForce;
@@ -72,13 +58,13 @@ public class PlayerController : MonoBehaviour
         DontDestroyOnLoad(_instance.gameObject);
 
         _terrainMask = 1 << LayerMask.NameToLayer("Terrain");
-
-        UIManager.Instance.GetComponentInChildren<Typewriter>(true).finishedTyping.AddListener(() => _reading = false);
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
-        healthChanged.Invoke(maxHealth, currentHealth);
+        yield return new WaitWhile(() => UIManager.Instance == null);
+
+        UIManager.Instance.GetUI("Note Background").GetComponentInChildren<Typewriter>(true).finishedTyping.AddListener(() => _reading = false);
     }
 
     private void Update()
@@ -235,10 +221,10 @@ public class PlayerController : MonoBehaviour
             switch (interactingWith.interactionType)
             {
                 case InteractionType.Note:
-                    var typewriter = UIManager.Instance.GetComponentInChildren<Typewriter>(true);
+                    var typewriter = UIManager.Instance.GetUI("Note Background").GetComponentInChildren<Typewriter>(true);
                     if (!_reading && !_interacting)
                     {
-                        UIManager.Instance.ShowUI("Fader");
+                        UIManager.Instance.ShowUI("Note Background");
                         _interacting = _reading = true;
                         _typeRoutine = StartCoroutine(typewriter.StartTyping(((InteractiveNote)interactingWith).interactText));
                     }
@@ -251,8 +237,12 @@ public class PlayerController : MonoBehaviour
                     else if (!_reading && _interacting)
                     {
                         _interacting = false;
-                        UIManager.Instance.HideUI("Fader");
+                        UIManager.Instance.HideUI("Note Background");
                     }
+
+                    break;
+                case InteractionType.Door:
+                    RoomManager.ChangeRoom(((InteractiveDoor)interactingWith).toScene);
                     break;
             }
         }

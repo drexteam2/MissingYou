@@ -1,15 +1,17 @@
-using HutongGames.PlayMaker.Actions;
+using System.Collections;
 using UnityEngine.EventSystems;
 
 public class UIItem : UIBehaviour
 {
-    public virtual void Show()
+    public virtual IEnumerator Show()
     {
         gameObject.SetActive(true);
+        yield return null;
     }
 
-    public virtual void Hide()
+    public virtual IEnumerator Hide()
     {
         gameObject.SetActive(false);
+        yield return null;
     }
 }
