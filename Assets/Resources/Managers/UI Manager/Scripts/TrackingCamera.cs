@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class TrackingCamera : MonoBehaviour
@@ -11,8 +12,13 @@ public class TrackingCamera : MonoBehaviour
     private void Awake()
     {
         _body ??= GetComponent<Rigidbody2D>();
+    }
 
-        target ??= PlayerController.Instance.gameObject;
+    private IEnumerator Start()
+    {
+        yield return new WaitWhile(() => GameObject.FindGameObjectWithTag("Player") == null);
+        
+        target = GameObject.FindGameObjectWithTag("Player");
     }
     
     private void Update()

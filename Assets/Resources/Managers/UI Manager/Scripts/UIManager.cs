@@ -60,34 +60,30 @@ public class UIManager : UIBehaviour
         return null;
     }
 
-    public UIItem ShowUI(string uiName)
+    public void ShowUI(string uiName)
     {
         UIItem ui = GetUI(uiName);
         if (ui == null)
         {
             Debug.LogError($"Could not show {uiName}; UI does not exist.");
-            return null;
+            return;
         }
 
         Debug.Log($"Showing UI {uiName}.");
         StartCoroutine(ui.Show());
-
-        return ui;
     }
 
-    public UIItem HideUI(string uiName)
+    public void HideUI(string uiName)
     {
         UIItem ui = GetUI(uiName);
         if (ui == null)
         {
             Debug.LogError($"Could not hide {uiName}; UI does not exist.");
-            return null;
+            return;
         }
 
         Debug.Log($"Hiding UI {uiName}.");
         StartCoroutine(ui.Hide());
-
-        return ui;
     }
 
     public void FreeUI(string uiName)

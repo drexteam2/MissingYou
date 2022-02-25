@@ -10,9 +10,13 @@ public class RoomManager : MonoBehaviour
 
         IEnumerator ChangeRoomRoutine()
         {
-            yield return UIManager.Instance.ShowUI("Fader");
+            UIManager.Instance.ShowUI("Fader");
+            yield return new WaitForSeconds(UIManager.Instance.GetUI("Fader").GetComponent<Animator>()
+                .GetCurrentAnimatorStateInfo(0).length);
             UnityEngine.SceneManagement.SceneManager.LoadScene(toRoom);
-            yield return UIManager.Instance.HideUI("Fader");
+            UIManager.Instance.HideUI("Fader");
+            yield return new WaitForSeconds(UIManager.Instance.GetUI("Fader").GetComponent<Animator>()
+                .GetCurrentAnimatorStateInfo(0).length);
         }
     }
 }

@@ -24,7 +24,8 @@ public class SlashEffect : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Enemy") && 
+            Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z,  90 * PlayerController.Instance.transform.localScale.x)) <= Mathf.Epsilon)
         {
             PlayerController.Instance.Bounce();
         }
