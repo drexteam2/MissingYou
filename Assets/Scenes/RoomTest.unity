@@ -228,6 +228,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.39200473
       objectReference: {fileID: 0}
+    - target: {fileID: 307324674404469861, guid: f4353fe56f35ef74198d166de06d75be, type: 3}
+      propertyPath: startRight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2630834980919236197, guid: f4353fe56f35ef74198d166de06d75be, type: 3}
       propertyPath: m_Name
       value: Generic Enemy
