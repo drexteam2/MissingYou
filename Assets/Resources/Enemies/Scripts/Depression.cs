@@ -2,7 +2,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class Depression : MonoBehaviour
+public class Depression : Enemy
 {
     public float idleMin;
     public float idleMax;
@@ -25,6 +25,24 @@ public class Depression : MonoBehaviour
         _terrainMask = 1 << LayerMask.NameToLayer("Terrain");
 
         StartCoroutine(AI());
+    }
+
+    protected override void Die()
+    {
+        StopAllCoroutines();
+        StartCoroutine(Death());
+
+        IEnumerator Death()
+        {
+            _body.velocity = Vector2.zero;
+            yield return new WaitUntil(() => IsGrounded());
+
+            _anim.Play("Death");
+            yield return new WaitForSeconds(_anim.runtimeAnimatorController.animationClips
+                .First(clip => clip.name == "Death").length);
+
+            Destroy(gameObject);
+        }
     }
 
     private IEnumerator AI()

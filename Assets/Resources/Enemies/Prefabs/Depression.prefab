@@ -127,7 +127,6 @@ GameObject:
   - component: {fileID: 8683958873460492707}
   - component: {fileID: 3642115091996876208}
   - component: {fileID: 2474739831830980907}
-  - component: {fileID: 8528688893212343487}
   - component: {fileID: 9096015346647022252}
   m_Layer: 8
   m_Name: Depression
@@ -269,23 +268,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4.169596, y: 1.3734818}
   m_EdgeRadius: 0
---- !u!114 &8528688893212343487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7090514000858922476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35c4010147763fa4b9011f97e7740902, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damager: {fileID: 11400000, guid: 7efd767e9944ef140b28349c7a86a4ed, type: 2}
-  health: 250
-  healthChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &9096015346647022252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,6 +280,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d0be8faf1789644a1682aca70c0c4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bloodPrefab: {fileID: 8430834004362178264, guid: a0192346e72926040aecf83c4a6e5c14, type: 3}
+  damager: {fileID: 11400000, guid: 7efd767e9944ef140b28349c7a86a4ed, type: 2}
+  health: 250
+  healthChanged:
+    m_PersistentCalls:
+      m_Calls: []
   idleMin: 0.5
   idleMax: 1
   holdTime: 1

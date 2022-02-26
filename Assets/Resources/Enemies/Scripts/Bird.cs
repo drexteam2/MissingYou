@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class Bird : MonoBehaviour
+public class Bird : Enemy
 {
     public float chaseSpeedMultiplier;
     public float maxChaseSpeed;

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7921160290928998359}
   - component: {fileID: 812013358464928368}
   - component: {fileID: 3671204811655242274}
-  - component: {fileID: 4247996176918205571}
   - component: {fileID: 7466251632175967729}
   - component: {fileID: 133116284519397710}
   m_Layer: 8
@@ -134,23 +133,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 7.298562, y: 4.4219985}
   m_EdgeRadius: 0
---- !u!114 &4247996176918205571
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419185951473909388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35c4010147763fa4b9011f97e7740902, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damager: {fileID: 11400000, guid: 186f180d6bb6df04d91be3303c6b617f, type: 2}
-  health: 15
-  healthChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!50 &7466251632175967729
 Rigidbody2D:
   serializedVersion: 4
@@ -184,6 +166,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4566478120e60d94b9bbb9d5722df015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bloodPrefab: {fileID: 8430834004362178264, guid: a0192346e72926040aecf83c4a6e5c14, type: 3}
+  damager: {fileID: 11400000, guid: 186f180d6bb6df04d91be3303c6b617f, type: 2}
+  health: 15
+  healthChanged:
+    m_PersistentCalls:
+      m_Calls: []
   chaseSpeedMultiplier: 1
   maxChaseSpeed: 2
 --- !u!1 &7966671808384114883

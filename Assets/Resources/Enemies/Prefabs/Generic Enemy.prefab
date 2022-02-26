@@ -194,8 +194,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35c4010147763fa4b9011f97e7740902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bloodPrefab: {fileID: 8430834004362178264, guid: a0192346e72926040aecf83c4a6e5c14, type: 3}
   damager: {fileID: 11400000, guid: 62f5fb6cff6394d45a4692b6b21765f2, type: 2}
-  health: 0
+  health: 20
   healthChanged:
     m_PersistentCalls:
       m_Calls: []

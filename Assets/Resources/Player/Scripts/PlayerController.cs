@@ -198,17 +198,17 @@ public class PlayerController : MonoBehaviour
             if (_inputVector.y > Mathf.Epsilon)
             {
                 //_anim.Play("Attack Up");
-                slashEffect.transform.Rotate(0, 0, -90 * transform.localScale.x);
+                slashEffect.GetComponent<SlashEffect>().Slash(Direction.Up);
             }
             else if (_inputVector.y < -Mathf.Epsilon && !IsGrounded())
             {
                 //_anim.Play("Attack Down");
-                slashEffect.transform.Rotate(0, 0, 90 * transform.localScale.x);
+                slashEffect.GetComponent<SlashEffect>().Slash(Direction.Down);
             }
             else
             {
                 //_anim.Play("Attack");
-                slashEffect.transform.Rotate(0, 0, 180);
+                slashEffect.GetComponent<SlashEffect>().Slash(transform.localScale.x > 0 ? Direction.Right : Direction.Left);
             }
         }
     }
