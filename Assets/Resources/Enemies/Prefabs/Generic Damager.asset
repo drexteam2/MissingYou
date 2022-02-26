@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c17d6874193639408417abe6506949c, type: 3}
-  m_Name: BirdDamager
+  m_Name: Generic Damager
   m_EditorClassIdentifier: 
-  damageAmount: 10
+  damageAmount: 20
