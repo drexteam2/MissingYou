@@ -4,7 +4,7 @@ Put yourself in the shoes of a young boy facing the trauma and grief of losing a
 DGDG Team 2's submission to Brackeys Game Jam 2022.1
 
 ## Credits
-Jason Ngo: Developer
-Sope Lartey: Artist, Narrative Design
-Gabriel Que: Developer
-Debem: Developer, Sound Design
+<p> Jason Ngo: Developer </p>
+<p> Sope Lartey: Artist, Narrative Design </p>
+<p> Gabriel Que: Developer </p>
+<p> Dubem: Developer, Sound Design </p>
